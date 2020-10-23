@@ -33,7 +33,7 @@
     // };
 
     RemoteDataStore.prototype.add = function (data) {
-      var collection = firebase.firestore().collection('coffeeOrders');
+      var collection = firebase.firestore().collection('coffeeorders');
       return collection.add(data);
     };
 
@@ -46,7 +46,7 @@
 
     RemoteDataStore.prototype.getAll = function (renderer) {
       var query = firebase.firestore()
-          .collection('cofeeOrders')
+          .collection('cofeeorders')
           .orderBy('coffee')
           .limit(50);
   
@@ -75,7 +75,7 @@
     // };
 
     RemoteDataStore.prototype.get = function (key) {
-      return firebase.firestore().collection('coffeeOrders').doc(key).get();
+      return firebase.firestore().collection('coffeeorders').doc(key).get();
     };
 
     // RemoteDataStore.prototype.remove = function (key) {
@@ -87,7 +87,7 @@
     RemoteDataStore.prototype.remove = function (key) {
       // key = email address
       console.log(key);
-      var collection = firestore.collection('coffeeOrders');
+      var collection = firestore.collection('coffeeorders');
       var query = collection.where("emailAddress", "==", key);
       query.get().then(function (querySnapshot) {
           querySnapshot.forEach(function(doc) {
