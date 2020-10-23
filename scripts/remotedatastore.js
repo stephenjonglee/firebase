@@ -32,10 +32,9 @@
     //     });
     // };
 
-    RemoteDataStore.prototype.add = function (key, val) {
-      var collection = firestore.collection('coffeeOrders');
-      collection.add(val);
-      console.log("successfully added data to firestore");
+    RemoteDataStore.prototype.add = function (data) {
+      var collection = firebase.firestore().collection('coffeeOrders');
+      return collection.add(data);
     };
 
     // RemoteDataStore.prototype.getAll = function (cb) {
@@ -45,13 +44,27 @@
     //     cb(serverResponse);
     // };
 
-    RemoteDataStore.prototype.getAll = function (cb) {
+    RemoteDataStore.prototype.getAll = function (renderer) {
       var query = firebase.firestore()
-          .collection('cofeeorders')
+          .collection('cofeeOrders')
           .orderBy('coffee')
           .limit(50);
   
-      this.getDocumentsInQuery(query, cb);
+      this.getDocumentsInQuery(query, renderer);
+    };
+
+    RemoteDataStore.prototype.getDocumentsInQuery = function (query, renderer) {
+      query.onSnapshot(function (snapshot) {
+        if (!snapshot.size) return renderer.empty(); // Display "There are no coffees".
+    
+        snapshot.docChanges().forEach(function (change) {
+          if (change.type === 'removed') {
+            renderer.remove(change.doc);
+          } else {
+            renderer.display(change.doc);
+          }
+        });
+      });
     };
 
     // RemoteDataStore.prototype.get = function (key, cb) {
@@ -61,17 +74,8 @@
     //     });
     // };
 
-    RemoteDataStore.prototype.get = function (key, cb) {
-      // key = email address, cb = callback
-      var collection = firestore.collection('coffeeOrders');
-      var query = collection.where("emailAddress", "==", key);
-      query.get().then(function (querySnapshot) {
-          querySnapshot.forEach(function (doc) {
-              console.log(doc.data());
-          });
-      }).catch(function (error) {
-          console.log("error retrieving order");
-      });
+    RemoteDataStore.prototype.get = function (key) {
+      return firebase.firestore().collection('coffeeOrders').doc(key).get();
     };
 
     // RemoteDataStore.prototype.remove = function (key) {
@@ -85,10 +89,10 @@
       console.log(key);
       var collection = firestore.collection('coffeeOrders');
       var query = collection.where("emailAddress", "==", key);
-      query.get().then(function(querySnapshot) {
+      query.get().then(function (querySnapshot) {
           querySnapshot.forEach(function(doc) {
               doc.ref.delete();
-              console.log("item delted");
+              console.log("order delted");
           });
       }).catch(function(error) {
           console.log("error retrieving object");
