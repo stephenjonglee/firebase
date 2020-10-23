@@ -19,3 +19,4 @@ Put your static files (e.g., HTML, CSS, JS) in your app’s deploy directory (th
 $ firebase deploy
 
 After deploying, view your app at coffeerunfirebase-a1f1a.web.app
+
